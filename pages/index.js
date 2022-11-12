@@ -48,8 +48,7 @@ export default function Home() {
       saleContract
     );
     // console.log("base URIs ", baseURIs);
-    await getTokensMetaData(baseURIs, setNFTs, saleContract);
-
+    let _data = await getTokensMetaData(baseURIs, setNFTs, saleContract);
     setLoading(false);
   }
   async function fetchDeployment() {
@@ -59,7 +58,9 @@ export default function Home() {
       web3ModalRef,
       myUrlAddress
     );
-
+    if(_currentDeployment.currentDeployment){
+    setLoading(false);
+    }
     return _currentDeployment.currentDeployment;
   }
 
