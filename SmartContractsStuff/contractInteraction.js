@@ -1,7 +1,7 @@
 import { Contract } from "ethers/lib";
 import { getProviderOrSigner } from "./accountsConnect";
 import {
-  saleContractABI,
+  SaleABI,
   WebsiteRentABI,
   WebsiteRentAddress,
 } from "./contractMetdadata";
@@ -33,8 +33,13 @@ export const getSaleContract = async (
 ) => {
   if (Blockchain == "ethereum") {
     let signer = await getProviderOrSigner(web3ModalRef, true);
-    const saleContract = new Contract(contractAddress, saleContractABI, signer);
-    return saleContract;
+    try {
+      const saleContract = new Contract(contractAddress, SaleABI, signer);
+      console.log("sale contract is ", saleContract);
+      return saleContract;
+    } catch (e) {
+      console.log("error in making contract ", e);
+    }
   } else if (Blockchain == "tron") {
   } else {
     //
@@ -68,7 +73,6 @@ export async function mint(
     });
     await tx.wait();
     successCallback();
-    
   } else {
     // dont support
   }
@@ -90,9 +94,17 @@ export async function getCollectionURIs(
   web3ModalRef,
   contract
 ) {
-  let _totalSupply = await contract.totalSupply();
+  console.log({ Blockchain, NetworkChain, web3ModalRef, contract });
+  let _totalSupply ;
+  try {
+     _totalSupply = await contract.totalSupply();
+  } catch (e) {
+    console.log("supply error ", e);
+  }
+
   let numNFTsToFetch = 0;
   numNFTsToFetch = parseInt(_totalSupply);
+  console.log("supply is ", numNFTsToFetch);
   let baseURIs = [];
 
   //   console.log("Obtaining ", numNFTsToFetch, " NFTs");

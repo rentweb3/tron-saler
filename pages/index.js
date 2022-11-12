@@ -26,30 +26,47 @@ export default function Home() {
   const [brandName, setBrandName] = useState(null);
   const [baseURI, setBaseURI] = useState(null);
   const [NFTs, setNFTs] = useState([]);
-
+  const [walletAddress, setWalletAddress] = useState(null);
   const web3ModalRef = useRef();
 
   async function fetchCollection(deploymentAddress) {
     if (!isConnected) return null;
-    // console.log("making a sale contract ");
+    console.log("making a sale contract ");
+
     let saleContract = await getSaleContract(
       Blockchain,
       NetworkChain,
       web3ModalRef,
       deploymentAddress
     );
-    // console.log("sale contract is ", saleContract);
-    let _name = await saleContract.name();
-    setBrandName(_name);
-    let baseURIs = await getCollectionURIs(
-      Blockchain,
-      NetworkChain,
-      web3ModalRef,
-      saleContract
-    );
-    // console.log("base URIs ", baseURIs);
-    let _data = await getTokensMetaData(baseURIs, setNFTs, saleContract);
-    setLoading(false);
+    console.log("sale contract is ", saleContract);
+    let name;
+    try {
+      name = await saleContract.name();
+      console.log("name is ",name);
+      setBrandName(name);
+    } catch (e) {
+      console.log("not to get name");
+    }
+    let baseURIs;
+    try {
+      baseURIs = await getCollectionURIs(
+        Blockchain,
+        NetworkChain,
+        web3ModalRef,
+        saleContract
+      );
+      console.log("base URIs ", baseURIs);
+    } catch (e) {
+      console.log("unable to get base uri");
+    }
+    try {
+      let _data = await getTokensMetaData(baseURIs, setNFTs, saleContract);
+      setLoading(false);
+    } catch (e) {
+      console.log("errror:getmetadata ");
+      setLoading(false);
+    }
   }
   async function fetchDeployment() {
     let _currentDeployment = await getCurrentDeployment(
@@ -58,8 +75,8 @@ export default function Home() {
       web3ModalRef,
       myUrlAddress
     );
-    if(_currentDeployment.currentDeployment){
-    setLoading(false);
+    if (!_currentDeployment) {
+      return null;
     }
     return _currentDeployment.currentDeployment;
   }
@@ -69,7 +86,7 @@ export default function Home() {
     let deploymentAddress = await fetchDeployment();
     // console.log("inside index", deploymentAddress);
     console.log("deployment", deploymentAddress);
-    if (deploymentAddress != null) {
+    if (deploymentAddress) {
       await fetchCollection(deploymentAddress);
       setCurrentDeployment(deploymentAddress);
     } else {
@@ -87,21 +104,25 @@ export default function Home() {
         disableInjectedProvider: false,
       });
     }
-
+    if (isConnected) {
+      setWalletAddress(address);
+    }
     init();
   }, [isConnected]);
   // console.log("NFTs are ", NFTs);
-
   return (
-    <div style={{
-      height:"100vh",
-      background:"black"
-    }}>
+    <div
+      style={{
+        height: "100vh",
+        background: "black",
+      }}
+    >
       <Navbar
         image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQr7ZZQwTn5ClB5v8hOJTehixgGs5csluH-8WIUQEB2rdEaFFzXWOoXY4oOGK09US2CAdY&usqp=CAU"
         brandName={brandName ? brandName : "Nifter"}
         func={setCurrentPage}
       />
+
       {currentDeployment == null ? (
         <div
           style={{
@@ -116,10 +137,9 @@ export default function Home() {
             fontWeight: "700",
           }}
         >
-          {
-          !loading && !brandName?
-          "Nifter is not rented for any sale yet"
-         : loading && !brandName
+          {!walletAddress
+            ? "Connect Wallet First"
+            : loading && !brandName
             ? "Loading Hosted Collection's details"
             : brandName
             ? brandName + " NFTs are coming.."

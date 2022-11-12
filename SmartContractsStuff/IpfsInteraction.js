@@ -37,6 +37,7 @@ export const getTokenMetadata = async (tokenUriHash, id) => {
 
 export const getTokensMetaData = async (tokenURIs, setter, contract) => {
   let metadataArray = [];
+  console.log("toke uri are ",tokenURIs)
   tokenURIs?.map(async (item, index) => {
     await getTokenMetadata(item, index + 1).then(async (metadata) => {
       //   console.log("metadata is ", metadata);
@@ -52,7 +53,7 @@ export const getTokensMetaData = async (tokenURIs, setter, contract) => {
       }
     });
     if (index + 1 == tokenURIs.length) {
-      //   console.log("metadata array is ", metadataArray);
+        console.log("metadata array is ", metadataArray);
       if (setter) {
         setter(metadataArray);
       }
