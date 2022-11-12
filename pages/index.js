@@ -116,7 +116,10 @@ export default function Home() {
             fontWeight: "700",
           }}
         >
-          {loading && !brandName
+          {
+          !loading && !brandName?
+          "Nifter is not rented for any sale yet"
+         : loading && !brandName
             ? "Loading Hosted Collection's details"
             : brandName
             ? brandName + " NFTs are coming.."
