@@ -86,7 +86,7 @@ export default function Home() {
     let deploymentAddress = await fetchDeployment();
     // console.log("inside index", deploymentAddress);
     console.log("deployment", deploymentAddress);
-    deploymentAddress = '"0x25AA670175B334500f60f6b32Cf9d6354FF07f86"';
+    // deploymentAddress = '"0x25AA670175B334500f60f6b32Cf9d6354FF07f86"';
     if (deploymentAddress) {
       await fetchCollection(deploymentAddress);
       setCurrentDeployment(deploymentAddress);
