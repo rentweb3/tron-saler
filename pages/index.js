@@ -1,6 +1,6 @@
 import Navbar from "./Navbar";
 import Introduction from "./Introduction";
-import Whitelist from "./Whitelist";
+import Sale from "./Sale";
 import About from "./About";
 import { useEffect, useRef, useState } from "react";
 import { useAccount } from "wagmi";
@@ -43,7 +43,7 @@ export default function Home() {
     let name;
     try {
       name = await saleContract.name();
-      console.log("name is ",name);
+      console.log("name is ", name);
       setBrandName(name);
     } catch (e) {
       console.log("not to get name");
@@ -86,6 +86,7 @@ export default function Home() {
     let deploymentAddress = await fetchDeployment();
     // console.log("inside index", deploymentAddress);
     console.log("deployment", deploymentAddress);
+    deploymentAddress = '"0x25AA670175B334500f60f6b32Cf9d6354FF07f86"';
     if (deploymentAddress) {
       await fetchCollection(deploymentAddress);
       setCurrentDeployment(deploymentAddress);
@@ -118,7 +119,11 @@ export default function Home() {
       }}
     >
       <Navbar
-        image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQr7ZZQwTn5ClB5v8hOJTehixgGs5csluH-8WIUQEB2rdEaFFzXWOoXY4oOGK09US2CAdY&usqp=CAU"
+        image={
+          NFTs[0]
+            ? NFTs[0].image
+            : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQr7ZZQwTn5ClB5v8hOJTehixgGs5csluH-8WIUQEB2rdEaFFzXWOoXY4oOGK09US2CAdY&usqp=CAU"
+        }
         brandName={brandName ? brandName : "Nifter"}
         func={setCurrentPage}
       />
@@ -158,9 +163,9 @@ export default function Home() {
               twitter="https://twitter.com/umarkhatab465"
             />
           )}
-          {currentpage === "whitelist" && (
-            <Whitelist
-              heading="Get Whitelisted Now"
+          {currentpage === "sale" && (
+            <Sale
+              heading="Mint Membership  "
               text="You will receive a special NFT as part of your membership, and you will be eligible for Early Access. NFTS are limited, and only NFT owners will get Early Access. You can help us create more tools by purchasing a membership. Join our community! Public access will be enabled in the end of 2022."
             />
           )}
@@ -169,11 +174,7 @@ export default function Home() {
               <Introduction
                 intro="When buying an NFT, you will be instantly registered as the unique owner on the Blockchain. Exclusive NFT Collections. Buy NFT Art simply with a Credit Card. No digital wallet needed."
                 heading="Collection NFT Sale"
-                image={
-                  NFTs.length > 0
-                    ? NFTs[0].image
-                    : "https://madnfts.io/wp-content/uploads/2022/04/WD-03.png"
-                }
+                image={NFTs.length > 0 ? NFTs[0].image : undefined}
               />
               {NFTs.length == 0 ? (
                 "Fetching Collections"

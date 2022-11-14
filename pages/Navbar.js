@@ -8,9 +8,9 @@ export default function Navbar(props) {
     console.log("call home page");
     props.func("home");
   };
-  const whitelist = () => {
-    console.log("call whitelisting page");
-    props.func("whitelist");
+  const sale = () => {
+    console.log("call saleing page");
+    props.func("sale");
   };
   const about = () => {
     console.log("call about page");
@@ -27,8 +27,8 @@ export default function Navbar(props) {
           <button className={navstyle.button} onClick={homepage}>
             Home
           </button>
-          <button className={navstyle.button} onClick={whitelist}>
-            Whitelisting
+          <button className={navstyle.button} onClick={sale}>
+            Sale
           </button>
           <button className={navstyle.button} onClick={about}>
             About

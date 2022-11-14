@@ -3,7 +3,7 @@ import styles from "../styles/Introduction.module.css";
 
 export default function Introduction(props) {
   let image = props.image;
-  const getwhitelisted = () => {
+  const getSale = () => {
     console.log("whitelisting page");
   };
 
@@ -16,8 +16,8 @@ export default function Introduction(props) {
         <div className={styles.intro}>
           <p>{props.intro}</p>
           <div>
-            <button className={styles.button} onClick={getwhitelisted}>
-              Get Whitelisted
+            <button className={styles.button} onClick={getSale}>
+              Start Minting
             </button>
           </div>
         </div>
@@ -28,7 +28,7 @@ export default function Introduction(props) {
           src={
             image
               ? image
-              : "https://the-media-leader.com/wp-content/uploads/2022/07/adobestock-metaverse-resized.png"
+              : "https://cdnb.artstation.com/p/assets/images/images/051/104/991/large/nft-artist-whatsapp-image-2022-06-28-at-6-14-42-pm-1.jpg?1656465338"
           }
           alt="bordape"
         />

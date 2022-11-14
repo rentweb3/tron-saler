@@ -1,7 +1,7 @@
 import React from "react";
-import style from "../styles/Whitelist.module.css";
+import style from "../styles/Sale.module.css";
 
-export default function Whitelist(props) {
+export default function Sale(props) {
   return (
     <div className={style.main__container}>
       <div className={style.container__1}>
@@ -15,18 +15,18 @@ export default function Whitelist(props) {
         <div className={style.background__image}></div>
         <div className={style.info}>
           <br />
-          <h2>NFTsale-Display Collection Pass</h2>
+          <h2>NFT Sale-Display Collection Pass</h2>
           <br />
           <p>
-            By becoming whitelisted, you can select presale for your collection.
+            By becoming Saleed, you can select presale for your collection.
           </p>
           <br />
-          <p>Whitelisting price : 0.014ETH</p>
+          <p>Sale price : 0.014ETH</p>
           <br />
           <p>Total UI:9/10</p>
         </div>
         <div className={style.button__box}>
-          <button className={style.button}>Get Whitelist</button>
+          <button className={style.button}>Mint Now</button>
         </div>
       </div>
     </div>
