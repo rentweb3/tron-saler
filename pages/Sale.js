@@ -21,7 +21,7 @@ export default function Sale(props) {
             By becoming Saleed, you can select presale for your collection.
           </p>
           <br />
-          <p>Sale price : 0.014ETH</p>
+          <p>Sale price : 0.014MATIC</p>
           <br />
           <p>Total UI:9/10</p>
         </div>

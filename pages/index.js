@@ -13,10 +13,10 @@ import {
 import { getTokensMetaData } from "../SmartContractsStuff/IpfsInteraction";
 import ShowNFTs from "./ShowNFTs";
 
-let myUrlAddress = "https://nifter.vercel.app";
+let myUrlAddress = "https://lets-sale.vercel.app";
 let websiteType = "sale";
-let Blockchain = "ethereum";
-let NetworkChain = "goerli";
+let Blockchain = "polygon";
+let NetworkChain = "mumbai";
 
 export default function Home() {
   const [currentpage, setCurrentPage] = useState("home");
@@ -120,11 +120,9 @@ export default function Home() {
     >
       <Navbar
         image={
-          NFTs[0]
-            ? NFTs[0].image
-            : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQr7ZZQwTn5ClB5v8hOJTehixgGs5csluH-8WIUQEB2rdEaFFzXWOoXY4oOGK09US2CAdY&usqp=CAU"
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQr7ZZQwTn5ClB5v8hOJTehixgGs5csluH-8WIUQEB2rdEaFFzXWOoXY4oOGK09US2CAdY&usqp=CAU"
         }
-        brandName={brandName ? brandName : "Nifter"}
+        brandName={brandName ? brandName : "Lets Sale"}
         func={setCurrentPage}
       />
 
@@ -148,7 +146,7 @@ export default function Home() {
             ? "Loading Hosted Collection's details"
             : brandName
             ? brandName + " NFTs are coming.."
-            : "Nifter is not rented for any sale yet"}
+            : "Lets Sale is not rented for any sale yet"}
         </div>
       ) : (
         <>

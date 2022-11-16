@@ -8,8 +8,8 @@ import styles from "../styles/NFTInformation.module.css";
 import Web3Modal from "web3modal";
 import { useAccount } from "wagmi";
 
-let Blockchain = "ethereum";
-let NetworkChain = "goerli";
+let Blockchain = "polygon";
+let NetworkChain = "mumbai";
 
 function NFTInformation(props) {
   const { isConnected, isDisconnected, address } = useAccount();
@@ -21,7 +21,7 @@ function NFTInformation(props) {
   let contractAddress = props.contractAddress;
   let nftPrice = parseInt(nft?.price);
   let nftOwner = nft.owner;
-  if (Blockchain == "ethereum") {
+  if (Blockchain == "polygon") {
     nftPrice = nftPrice / 10 ** 18;
   } else if (Blockchain == "tron") {
     nftPrice = nftPrice / 10 ** 6;

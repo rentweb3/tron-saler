@@ -30,8 +30,12 @@
 }
 
 .nft__information__content__image {
-  width: 15vw;
+  width: 200px;
+  height: 200px;
+  object-fit: contain;
+  
   border-radius: 20px;
+  
 }
 .nft__information__content__name {
   font-size: 1.4em;

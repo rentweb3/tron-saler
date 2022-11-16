@@ -12,7 +12,7 @@ export const getWebsiteRentContract = async (
   networkChain,
   web3ModalRef
 ) => {
-  if (Blockchain == "ethereum") {
+  if (Blockchain == "polygon") {
     let provider = await getProviderOrSigner(web3ModalRef);
     const websiteRentContract = new Contract(
       WebsiteRentAddress,
@@ -31,7 +31,7 @@ export const getSaleContract = async (
   web3ModalRef,
   contractAddress
 ) => {
-  if (Blockchain == "ethereum") {
+  if (Blockchain == "polygon") {
     let signer = await getProviderOrSigner(web3ModalRef, true);
     try {
       const saleContract = new Contract(contractAddress, SaleABI, signer);
@@ -67,7 +67,7 @@ export async function mint(
       callValue: price,
       shouldPollResponse: true,
     });
-  } else if (Blockchain == "ethereum") {
+  } else if (Blockchain == "polygon") {
     let tx = await contract.purchaseThisToken(tokenId, {
       value: price,
     });
@@ -81,7 +81,7 @@ export async function getTokenOwner(Blockchain, contract) {
   if (Blockchain == "tron") {
     let owner = await contract.ownerOf(tokenId).call();
     return owner;
-  } else if (Blockchain == "ethereum") {
+  } else if (Blockchain == "polygon") {
     let owner = await contract.ownerOf(tokenId);
     return owner;
   }
@@ -95,9 +95,9 @@ export async function getCollectionURIs(
   contract
 ) {
   console.log({ Blockchain, NetworkChain, web3ModalRef, contract });
-  let _totalSupply ;
+  let _totalSupply;
   try {
-     _totalSupply = await contract.totalSupply();
+    _totalSupply = await contract.totalSupply();
   } catch (e) {
     console.log("supply error ", e);
   }
