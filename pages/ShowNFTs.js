@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styles from "../styles/ShowNFTs.module.css";
 import NFTInformation from "./NFTInformation";
+
 export default function ShowNFTs(props) {
   let collection = props.NFTs;
   let contractAddress=props.contractAddress;
@@ -11,11 +12,11 @@ export default function ShowNFTs(props) {
   return (
     <>
       {!selectedNFT && (
-        <div className={styles.main}>
-          <ul key={"ape_collection"} className={styles.collection_list}>
+        <div key={"NFTs collection"} className={styles.main}>
+          <ul  className={styles.collection_list}>
             {collection.map((item, index) => {
               return (
-                <li key={"ape" + index} className={styles.nft__container}>
+                <li key={"nft" + item.name} className={styles.nft__container}>
                   <div className={styles.image__container}>
                     <img
                       className={styles.image}

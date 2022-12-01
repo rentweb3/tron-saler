@@ -1,24 +1,40 @@
-import React from "react";
+import React, { useState,useEffect } from "react";
 import navstyle from "../styles/Navbar.module.css";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { connectWallet } from "../SmartContractsStuff/accountsConnect";
 
 export default function Navbar(props) {
-  let brandName=props.brandName;
+  let brandName = props.brandName;
+  const [connectedAddress, setConnectedAddress] = useState(null);
+
   const homepage = () => {
-    console.log("call home page");
     props.func("home");
   };
   const sale = () => {
-    console.log("call saleing page");
     props.func("sale");
   };
   const about = () => {
-    console.log("call about page");
     props.func("about");
   };
+  async function connectTheWallet() {
+    let adr = await connectWallet();
+    setConnectedAddress(adr);
+  }
+  useEffect(() => {
+    connectTheWallet();
+  }, []);
+function getMinimalAddress(address){
+if(!address){
+  connectTheWallet();
+  return "Fetching..."
+
+}
+return address.toString().slice(0,5)+'...'+address.toString().slice(-4,);
+
+}
   return (
     <>
-      <div  className={navstyle.maincontainer}>
+      <div className={navstyle.maincontainer}>
         <div className={navstyle.container1}>
           <img src={props.image} alt="icon" className={navstyle.image} />
           <p>{brandName}</p>
@@ -35,7 +51,7 @@ export default function Navbar(props) {
           </button>
         </div>
         <div className={navstyle.container3}>
-          <ConnectButton chainStatus={false} label={"Connect"}   showBalance={false}/>
+          <button onClick={connectTheWallet}>{connectedAddress?getMinimalAddress(connectedAddress):"Connect Wallet"}</button>
         </div>
       </div>
     </>

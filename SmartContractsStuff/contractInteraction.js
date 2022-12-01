@@ -1,103 +1,43 @@
-import { Contract } from "ethers/lib";
-import { getProviderOrSigner } from "./accountsConnect";
-import {
-  SaleABI,
-  WebsiteRentABI,
-  WebsiteRentAddress,
-} from "./contractMetdadata";
+import { WebsiteRentAddress } from "./contractMetdadata";
 import { getTokensMetaData } from "./IpfsInteraction";
 
-export const getWebsiteRentContract = async (
-  Blockchain,
-  networkChain,
-  web3ModalRef
-) => {
-  if (Blockchain == "polygon") {
-    let provider = await getProviderOrSigner(web3ModalRef);
-    const websiteRentContract = new Contract(
-      WebsiteRentAddress,
-      WebsiteRentABI,
-      provider
-    );
-    return websiteRentContract;
-  } else if (Blockchain == "tron") {
-  } else {
-    //
+export const getWebsiteRentContract = async () => {
+  let contractAddress = WebsiteRentAddress;
+  let tronWeb = await window.tronLink.tronWeb;
+  let contract = await tronWeb.contract().at(contractAddress);
+  return contract;
+};
+
+export const getSaleContract = async (contractAddress) => {
+  try {
+    let tronWeb = await window.tronLink.tronWeb;
+    let contract = await tronWeb.contract().at(contractAddress);
+    return contract;
+  } catch (e) {
+    console.log("error in making contract ", e);
   }
 };
-export const getSaleContract = async (
-  Blockchain,
-  NetworkChain,
-  web3ModalRef,
-  contractAddress
-) => {
-  if (Blockchain == "polygon") {
-    let signer = await getProviderOrSigner(web3ModalRef, true);
-    try {
-      const saleContract = new Contract(contractAddress, SaleABI, signer);
-      console.log("sale contract is ", saleContract);
-      return saleContract;
-    } catch (e) {
-      console.log("error in making contract ", e);
-    }
-  } else if (Blockchain == "tron") {
-  } else {
-    //
-  }
-};
-export async function mint(
-  Blockchain,
-  NetworkChain,
-  web3ModalRef,
-  contractAddress,
-  tokenId,
-  price,
-  successCallback
-) {
-  let contract = await getSaleContract(
-    Blockchain,
-    NetworkChain,
-    web3ModalRef,
-    contractAddress
-  );
+export async function mint(contractAddress, tokenId, price, successCallback) {
+  let contract = await getSaleContract(contractAddress);
   console.log("sale contract to mint from ", contract);
-  if (Blockchain == "tron") {
-    await contract.purchaseThisToken(tokenId).send({
-      feeLimit: 100000000,
-      callValue: price,
-      shouldPollResponse: true,
-    });
-  } else if (Blockchain == "polygon") {
-    let tx = await contract.purchaseThisToken(tokenId, {
-      value: price,
-    });
-    await tx.wait();
-    successCallback();
-  } else {
-    // dont support
-  }
+  await contract.purchaseThisToken(tokenId).send({
+    feeLimit: 100000000,
+    callValue: price,
+    shouldPollResponse: true,
+  });
+  
 }
-export async function getTokenOwner(Blockchain, contract) {
-  if (Blockchain == "tron") {
-    let owner = await contract.ownerOf(tokenId).call();
-    return owner;
-  } else if (Blockchain == "polygon") {
-    let owner = await contract.ownerOf(tokenId);
-    return owner;
-  }
+export async function getTokenOwner(contract) {
+  let owner = await contract.ownerOf(tokenId).call();
+  return owner;
+
   return "0x0000000";
 }
 
-export async function getCollectionURIs(
-  Blockchain,
-  NetworkChain,
-  web3ModalRef,
-  contract
-) {
-  console.log({ Blockchain, NetworkChain, web3ModalRef, contract });
+export async function getCollectionURIs(contract) {
   let _totalSupply;
   try {
-    _totalSupply = await contract.totalSupply();
+    _totalSupply = await contract.totalSupply().call();
   } catch (e) {
     console.log("supply error ", e);
   }
@@ -107,53 +47,41 @@ export async function getCollectionURIs(
   console.log("supply is ", numNFTsToFetch);
   let baseURIs = [];
 
-  //   console.log("Obtaining ", numNFTsToFetch, " NFTs");
+  console.log("Obtaining ", numNFTsToFetch, " NFTs");
+  let baseURI = await contract.baseURI().call();
+
   for (let index = 0; index < numNFTsToFetch; index++) {
-    await contract
-      .tokenURI(index + 1)
-      .then((item) => {
-        baseURIs.push(item);
-      })
-      .catch((e) => {
-        console.log("error in fetching tokenURI of ", index + 1);
-      });
+    let tokenURI = `${baseURI}/${index+1}.json`;
+    baseURIs.push(tokenURI);
   }
-  //   console.log("base uris are ", baseURIs);
   return baseURIs;
 }
 function noDeployment(adr) {
   if (
     !adr ||
-    adr?.toString().includes("0x0000") ||
-    adr?.toString().includes("0X0000")
+    adr?.toString().includes("0000000000") ||
+    adr?.toString().includes("41c0000")
   )
     return true;
 
   return false;
 }
 
-export async function getCurrentDeployment(
-  Blockchain,
-  NetworkChain,
-  web3ModalRef,
-  websiteURL
-) {
+export async function getCurrentDeployment(websiteURL) {
   //   console.log("inside getting current deployment");
-  let contract = await getWebsiteRentContract(
-    Blockchain,
-    NetworkChain,
-    web3ModalRef
-  );
+  let contract = await getWebsiteRentContract();
   //   console.log("contract is ", contract);
   console.log("checking Deployment of _" + websiteURL + "_");
-  let _currentDeployment = await contract.websiteToDeployment(websiteURL);
+  let _currentDeployment = await contract
+    .websiteToDeployment(websiteURL)
+    .call();
   //   console.log("curremt deployment", _currentDeployment);
   if (noDeployment(_currentDeployment)) {
     console.log("No deployment");
     return null;
   }
 
-  let rentTime = await contract.rentTime(websiteURL);
+  let rentTime = await contract.rentTime(websiteURL).call();
 
   let jsEpochRentTime = parseInt(rentTime * 1000);
   let currentTime = new Date().getTime();

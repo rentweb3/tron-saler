@@ -12,37 +12,26 @@ import {
 } from "../SmartContractsStuff/contractInteraction";
 import { getTokensMetaData } from "../SmartContractsStuff/IpfsInteraction";
 import ShowNFTs from "./ShowNFTs";
+import { connectWallet } from "../SmartContractsStuff/accountsConnect";
 
-let myUrlAddress = "https://lets-sale.vercel.app";
-let websiteType = "sale";
-let Blockchain = "polygon";
-let NetworkChain = "mumbai";
+let myUrlAddress = "https://tron-saler.vercel.app";
 
 export default function Home() {
   const [currentpage, setCurrentPage] = useState("home");
-  const { isConnected, isDisconnected, address } = useAccount();
   const [currentDeployment, setCurrentDeployment] = useState(null);
   const [loading, setLoading] = useState(true);
   const [brandName, setBrandName] = useState(null);
-  const [baseURI, setBaseURI] = useState(null);
   const [NFTs, setNFTs] = useState([]);
   const [walletAddress, setWalletAddress] = useState(null);
-  const web3ModalRef = useRef();
 
   async function fetchCollection(deploymentAddress) {
-    if (!isConnected) return null;
     console.log("making a sale contract ");
 
-    let saleContract = await getSaleContract(
-      Blockchain,
-      NetworkChain,
-      web3ModalRef,
-      deploymentAddress
-    );
+    let saleContract = await getSaleContract(deploymentAddress);
     console.log("sale contract is ", saleContract);
     let name;
     try {
-      name = await saleContract.name();
+      name = await saleContract.name().call();
       console.log("name is ", name);
       setBrandName(name);
     } catch (e) {
@@ -50,31 +39,20 @@ export default function Home() {
     }
     let baseURIs;
     try {
-      baseURIs = await getCollectionURIs(
-        Blockchain,
-        NetworkChain,
-        web3ModalRef,
-        saleContract
-      );
-      console.log("base URIs ", baseURIs);
+      baseURIs = await getCollectionURIs(saleContract);
+      // console.log("base URIs ", baseURIs);
     } catch (e) {
       console.log("unable to get base uri");
     }
     try {
-      let _data = await getTokensMetaData(baseURIs, setNFTs, saleContract);
-      setLoading(false);
+      await getTokensMetaData(baseURIs, setNFTs, saleContract);
     } catch (e) {
       console.log("errror:getmetadata ");
-      setLoading(false);
+      // setLoading(false);
     }
   }
   async function fetchDeployment() {
-    let _currentDeployment = await getCurrentDeployment(
-      Blockchain,
-      NetworkChain,
-      web3ModalRef,
-      myUrlAddress
-    );
+    let _currentDeployment = await getCurrentDeployment(myUrlAddress);
     if (!_currentDeployment) {
       return null;
     }
@@ -82,34 +60,25 @@ export default function Home() {
   }
 
   async function init() {
-    if (!address) return null;
+    let adr = await connectWallet();
+    if (!adr) return;
+    setWalletAddress(adr);
+
     let deploymentAddress = await fetchDeployment();
-    // console.log("inside index", deploymentAddress);
+    deploymentAddress = "TPsPBnb2VX6RLk5HqRjfyTJ284DK85b13q";
     console.log("deployment", deploymentAddress);
-    // deploymentAddress = '"0x25AA670175B334500f60f6b32Cf9d6354FF07f86"';
+    setCurrentDeployment(deploymentAddress);
+      
     if (deploymentAddress) {
       await fetchCollection(deploymentAddress);
-      setCurrentDeployment(deploymentAddress);
+      
     } else {
       setLoading(false);
     }
   }
   useEffect(() => {
-    // if wallet is not connected, create a new instance of Web3Modal and connect the MetaMask wallet
-    // Assign the Web3Modal class to the reference object by setting it's `current` value
-    // The `current` value is persisted throughout as long as this page is open
-    if (web3ModalRef.current === undefined) {
-      web3ModalRef.current = new Web3Modal({
-        network: NetworkChain,
-        providerOptions: {},
-        disableInjectedProvider: false,
-      });
-    }
-    if (isConnected) {
-      setWalletAddress(address);
-    }
     init();
-  }, [isConnected]);
+  }, []);
   // console.log("NFTs are ", NFTs);
   return (
     <div
@@ -122,7 +91,7 @@ export default function Home() {
         image={
           "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQr7ZZQwTn5ClB5v8hOJTehixgGs5csluH-8WIUQEB2rdEaFFzXWOoXY4oOGK09US2CAdY&usqp=CAU"
         }
-        brandName={brandName ? brandName : "Lets Sale"}
+        brandName={brandName ? brandName : "Tron Saler"}
         func={setCurrentPage}
       />
 
