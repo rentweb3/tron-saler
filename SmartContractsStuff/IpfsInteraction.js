@@ -37,11 +37,17 @@ export const getTokenMetadata = async (tokenUriHash, id) => {
   return _token;
 };
 
-export const getTokensMetaData = async (tokenURIs, setter, contract) => {
+export const getTokensMetaData = async (tokenURIs, setter, contract,totalTokensSetter,numTokensFetchedSetter) => {
   let metadataArray = [];
   // console.log("toke uri are ",tokenURIs)
+  let totalTokens=tokenURIs.length;
+  totalTokensSetter(totalTokens);
+
   try{
-    tokenURIs?.map(async (item, index) => {
+   for (let index = 0; index < totalTokens; index++) 
+    {
+      const item = tokenURIs[index];
+
       await getTokenMetadata(item, index + 1).then(async (metadata) => {
           // console.log("metadata is ", metadata);
         let _metadata = metadata;
@@ -71,8 +77,9 @@ export const getTokensMetaData = async (tokenURIs, setter, contract) => {
         return metadataArray;
       }
 
-      
-    });
+      numTokensFetchedSetter(index+1);
+
+    };
     
   }
   catch(e){

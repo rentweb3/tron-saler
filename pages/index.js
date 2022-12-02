@@ -23,6 +23,8 @@ export default function Home() {
   const [brandName, setBrandName] = useState(null);
   const [NFTs, setNFTs] = useState([]);
   const [walletAddress, setWalletAddress] = useState(null);
+  const [numTokensFetched,setNumTokensFetched]=useState(0);
+  const [totalTokensSupply,setTotalTokensSupply]=useState(0);
 
   async function fetchCollection(deploymentAddress) {
     console.log("making a sale contract ");
@@ -45,9 +47,9 @@ export default function Home() {
       console.log("unable to get base uri");
     }
     try {
-      await getTokensMetaData(baseURIs, setNFTs, saleContract);
+      await getTokensMetaData(baseURIs, setNFTs, saleContract,setTotalTokensSupply,setNumTokensFetched);
     } catch (e) {
-      console.log("errror:getmetadata ");
+      console.log("error:getmetadata ");
       // setLoading(false);
     }
   }
@@ -65,7 +67,7 @@ export default function Home() {
     setWalletAddress(adr);
 
     let deploymentAddress = await fetchDeployment();
-    deploymentAddress = "TPsPBnb2VX6RLk5HqRjfyTJ284DK85b13q";
+    // deploymentAddress = "TPsPBnb2VX6RLk5HqRjfyTJ284DK85b13q";
     console.log("deployment", deploymentAddress);
     setCurrentDeployment(deploymentAddress);
       
@@ -111,7 +113,7 @@ export default function Home() {
         >
           {!walletAddress
             ? "Connect Wallet First"
-            : loading && !brandName
+            : !currentDeployment?"Tron Saler is not hosted for any collection": loading && !brandName
             ? "Loading Hosted Collection's details"
             : brandName
             ? brandName + " NFTs are coming.."
@@ -144,7 +146,22 @@ export default function Home() {
                 image={NFTs.length > 0 ? NFTs[0].image : undefined}
               />
               {NFTs.length == 0 ? (
-                "Fetching Collections"
+                <div style={{
+                  fontWeight:"700",
+                  color:"white",
+                  background:"black",
+                  height:"100vh",
+                  width:"100%",
+                  display:"flex",
+                  justifyContent:"center",
+              
+                }}>
+                  <p>Fetching Collection.. <br/>Fetched{" "}{numTokensFetched}/{totalTokensSupply}{" "}tokens
+</p>
+                
+                </div>
+
+                
               ) : (
                 <ShowNFTs contractAddress={currentDeployment} NFTs={NFTs} />
               )}
