@@ -184,7 +184,7 @@ export default function Home() {
                     fontWeight: "600px",
                   }}
                 >
-                  <p>Fetching Collections...</p>
+                  <p>Fetching Collection...</p>
                 </div>
               ) : (
                 <ShowNFTs contractAddress={currentDeployment} NFTs={NFTs} />
