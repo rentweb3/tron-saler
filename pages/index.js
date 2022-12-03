@@ -23,6 +23,8 @@ export default function Home() {
   const [brandName, setBrandName] = useState(null);
   const [NFTs, setNFTs] = useState([]);
   const [walletAddress, setWalletAddress] = useState(null);
+  const [numTokensFetched, setNumTokensFetched] = useState(0);
+  const [totalTokensSupply, setTotalTokensSupply] = useState(0);
 
   async function fetchCollection(deploymentAddress) {
     console.log("making a sale contract ");
@@ -45,9 +47,15 @@ export default function Home() {
       console.log("unable to get base uri");
     }
     try {
-      await getTokensMetaData(baseURIs, setNFTs, saleContract);
+      await getTokensMetaData(
+        baseURIs,
+        setNFTs,
+        saleContract,
+        setTotalTokensSupply,
+        setNumTokensFetched
+      );
     } catch (e) {
-      console.log("errror:getmetadata ");
+      console.log("error:getmetadata ");
       // setLoading(false);
     }
   }
@@ -69,7 +77,7 @@ export default function Home() {
   async function init() {
     if (!walletAddress) return null;
     let deploymentAddress = await fetchDeployment();
-    deploymentAddress = "TPsPBnb2VX6RLk5HqRjfyTJ284DK85b13q";
+    // deploymentAddress = "TPsPBnb2VX6RLk5HqRjfyTJ284DK85b13q";
     console.log("deployment", deploymentAddress);
     setCurrentDeployment(deploymentAddress);
 
