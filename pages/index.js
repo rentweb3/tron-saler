@@ -86,7 +86,7 @@ export default function Home() {
     }
   }
   useEffect(() => {
-    ConnectTheWallet();
+    connectTheWallet();
     init();
   }, [walletAddress]);
   // console.log("NFTs are ", NFTs);
