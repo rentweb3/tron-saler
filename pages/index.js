@@ -52,6 +52,7 @@ export default function Home() {
     }
   }
   async function fetchDeployment() {
+    console.log("connected is ", walletAddress);
     let _currentDeployment = await getCurrentDeployment(myUrlAddress);
     if (!_currentDeployment) {
       return null;
@@ -59,26 +60,29 @@ export default function Home() {
     return _currentDeployment.currentDeployment;
   }
 
-  async function init() {
+  async function ConnectTheWallet() {
     let adr = await connectWallet();
     if (!adr) return;
     setWalletAddress(adr);
-
+    return adr;
+  }
+  async function init() {
+    if (!walletAddress) return null;
     let deploymentAddress = await fetchDeployment();
     deploymentAddress = "TPsPBnb2VX6RLk5HqRjfyTJ284DK85b13q";
     console.log("deployment", deploymentAddress);
     setCurrentDeployment(deploymentAddress);
-      
+
     if (deploymentAddress) {
       await fetchCollection(deploymentAddress);
-      
     } else {
-      setLoading(false);
+      // setLoading(false);
     }
   }
   useEffect(() => {
+    ConnectTheWallet();
     init();
-  }, []);
+  }, [walletAddress]);
   // console.log("NFTs are ", NFTs);
   return (
     <div
@@ -99,7 +103,7 @@ export default function Home() {
         <div
           style={{
             height: "100vh",
-            width: "100vw",
+            width: "100%",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -109,13 +113,22 @@ export default function Home() {
             fontWeight: "700",
           }}
         >
-          {!walletAddress
-            ? "Connect Wallet First"
-            : loading && !brandName
-            ? "Loading Hosted Collection's details"
-            : brandName
-            ? brandName + " NFTs are coming.."
-            : "Lets Sale is not rented for any sale yet"}
+          {!walletAddress ? (
+            <button
+              style={{ padding: "10px", cursor: "pointer" }}
+              onClick={ConnectTheWallet}
+            >
+              Connect Wallet
+            </button>
+          ) : !currentDeployment ? (
+            "Tron Saler is not rented for any collection"
+          ) : loading && !brandName ? (
+            "Loading Hosted Collection's details"
+          ) : brandName ? (
+            brandName + " NFTs are coming.."
+          ) : (
+            "Lets Sale is not rented for any sale yet"
+          )}
         </div>
       ) : (
         <>
@@ -143,8 +156,22 @@ export default function Home() {
                 heading="Collection NFT Sale"
                 image={NFTs.length > 0 ? NFTs[0].image : undefined}
               />
-              {NFTs.length == 0 ? (
-                "Fetching Collections"
+              {brandName && NFTs.length == 0 ? (
+                <div
+                  style={{
+                    width: "100%",
+                    height: "100vh",
+                    fontSize: "24px",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    background: "black",
+                    color: "white",
+                    fontWeight: "600px",
+                  }}
+                >
+                  <p>Fetching Collections...</p>
+                </div>
               ) : (
                 <ShowNFTs contractAddress={currentDeployment} NFTs={NFTs} />
               )}

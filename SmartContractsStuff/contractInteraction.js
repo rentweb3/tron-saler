@@ -3,8 +3,17 @@ import { getTokensMetaData } from "./IpfsInteraction";
 
 export const getWebsiteRentContract = async () => {
   let contractAddress = WebsiteRentAddress;
+  console.log("window is ", {
+    window,
+    tronLink: window.tronLink,
+    tronWeb: window.tronLink.tronWeb,
+  });
+
   let tronWeb = await window.tronLink.tronWeb;
   let contract = await tronWeb.contract().at(contractAddress);
+  console.log({
+    contract,
+  });
   return contract;
 };
 
@@ -25,7 +34,6 @@ export async function mint(contractAddress, tokenId, price, successCallback) {
     callValue: price,
     shouldPollResponse: true,
   });
-  
 }
 export async function getTokenOwner(contract) {
   let owner = await contract.ownerOf(tokenId).call();
@@ -51,7 +59,7 @@ export async function getCollectionURIs(contract) {
   let baseURI = await contract.baseURI().call();
 
   for (let index = 0; index < numNFTsToFetch; index++) {
-    let tokenURI = `${baseURI}/${index+1}.json`;
+    let tokenURI = `${baseURI}/${index + 1}.json`;
     baseURIs.push(tokenURI);
   }
   return baseURIs;
@@ -68,9 +76,10 @@ function noDeployment(adr) {
 }
 
 export async function getCurrentDeployment(websiteURL) {
-  //   console.log("inside getting current deployment");
+  console.log("inside getting current deployment");
   let contract = await getWebsiteRentContract();
-  //   console.log("contract is ", contract);
+  if (!contract) return null;
+  console.log("contract is ", contract);
   console.log("checking Deployment of _" + websiteURL + "_");
   let _currentDeployment = await contract
     .websiteToDeployment(websiteURL)

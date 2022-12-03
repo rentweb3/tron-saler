@@ -1,5 +1,5 @@
 import axios from "axios";
-const { toHex, fromHex } = require('tron-format-address')
+const { toHex, fromHex } = require("tron-format-address");
 
 function embedGateway(_hash) {
   if (_hash.toString().startsWith("http")) return _hash;
@@ -40,43 +40,40 @@ export const getTokenMetadata = async (tokenUriHash, id) => {
 export const getTokensMetaData = async (tokenURIs, setter, contract) => {
   let metadataArray = [];
   // console.log("toke uri are ",tokenURIs)
-  try{
-    tokenURIs?.map(async (item, index) => {
+  let totalTokens = tokenURIs.length;
+
+  try {
+    for (let index = 0; index < totalTokens; index++) {
+      const item = tokenURIs[index];
       await getTokenMetadata(item, index + 1).then(async (metadata) => {
-          // console.log("metadata is ", metadata);
+        // console.log("metadata is ", metadata);
         let _metadata = metadata;
-        try{
-          let tokenIsMinted = await contract.isTokenIdExists(metadata.id).call();
+        try {
+          let tokenIsMinted = await contract
+            .isTokenIdExists(metadata.id)
+            .call();
           _metadata.price = await contract.getNFTPrice(metadata.id).call();
           if (tokenIsMinted) {
             _metadata.owner = await contract.ownerOf(metadata.id).call();
-            _metadata.owner=fromHex(_metadata.owner);
+            _metadata.owner = fromHex(_metadata.owner);
             metadataArray.push(_metadata);
           } else {
             _metadata.owner = "00000000000000000000";
             metadataArray.push(_metadata);
           }
-          
-        }
-        catch(e){
-          console.log(e)
+        } catch (e) {
+          console.log(e);
         }
       });
-      if (index + 1 == tokenURIs.length) {
-          console.log("metadata array is ", metadataArray);
+      if (index + 1 === totalTokens) {
         if (setter) {
           setter(metadataArray);
         }
 
         return metadataArray;
       }
-
-      
-    });
-    
-  }
-  catch(e){
+    }
+  } catch (e) {
     console.log(e);
   }
-
 };
