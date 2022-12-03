@@ -3,13 +3,11 @@ import { getTokensMetaData } from "./IpfsInteraction";
 
 export const getWebsiteRentContract = async () => {
   let contractAddress = WebsiteRentAddress;
-  console.log("window is ", {
-    window,
-    tronLink: window.tronLink,
-    tronWeb: window.tronLink.tronWeb,
-  });
 
   let tronWeb = await window.tronLink.tronWeb;
+  console.log("getting contract with ", {
+    tronWeb,
+  });
   let contract = await tronWeb.contract().at(contractAddress);
   console.log({
     contract,

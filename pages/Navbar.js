@@ -21,7 +21,7 @@ export default function Navbar(props) {
     setConnectedAddress(adr);
   }
   useEffect(() => {
-    connectTheWallet();
+    // connectTheWallet();
   }, []);
 function getMinimalAddress(address){
 if(!address){
@@ -51,7 +51,16 @@ return address.toString().slice(0,5)+'...'+address.toString().slice(-4,);
           </button>
         </div>
         <div className={navstyle.container3}>
-          <button onClick={connectTheWallet}>{connectedAddress?getMinimalAddress(connectedAddress):"Connect Wallet"}</button>
+          <button style={{
+              padding:"10px",
+              background:"black",
+              border:"1px solid white",
+              color:"white",
+              borderRadius:"10px",
+              fontSize:"16px",
+              cursor:"pointer"
+            }}  onClick={connectTheWallet}>{connectedAddress?getMinimalAddress(connectedAddress):"Connect Wallet"}</button>
+          
         </div>
       </div>
     </>

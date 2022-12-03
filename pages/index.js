@@ -60,7 +60,6 @@ export default function Home() {
     }
   }
   async function fetchDeployment() {
-    console.log("connected is ", walletAddress);
     let _currentDeployment = await getCurrentDeployment(myUrlAddress);
     if (!_currentDeployment) {
       return null;
@@ -68,14 +67,13 @@ export default function Home() {
     return _currentDeployment.currentDeployment;
   }
 
-  async function ConnectTheWallet() {
+  async function connectTheWallet() {
     let adr = await connectWallet();
     if (!adr) return;
     setWalletAddress(adr);
-    return adr;
   }
   async function init() {
-    if (!walletAddress) return null;
+    if (!walletAddress) return;
     let deploymentAddress = await fetchDeployment();
     // deploymentAddress = "TPsPBnb2VX6RLk5HqRjfyTJ284DK85b13q";
     console.log("deployment", deploymentAddress);
@@ -123,13 +121,21 @@ export default function Home() {
         >
           {!walletAddress ? (
             <button
-              style={{ padding: "10px", cursor: "pointer" }}
-              onClick={ConnectTheWallet}
+              style={{
+                padding: "10px",
+                background: "black",
+                border: "1px solid white",
+                color: "white",
+                borderRadius: "10px",
+                fontSize: "16px",
+                cursor: "pointer",
+              }}
+              onClick={connectTheWallet}
             >
               Connect Wallet
             </button>
           ) : !currentDeployment ? (
-            "Tron Saler is not rented for any collection"
+            "Tron Saler is not hosted for any collection"
           ) : loading && !brandName ? (
             "Loading Hosted Collection's details"
           ) : brandName ? (
