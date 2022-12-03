@@ -21,7 +21,7 @@ export default function Navbar(props) {
     setConnectedAddress(adr);
   }
   useEffect(() => {
-    connectTheWallet();
+    // connectTheWallet();
   }, []);
 function getMinimalAddress(address){
 if(!address){

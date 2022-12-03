@@ -54,6 +54,7 @@ export default function Home() {
     }
   }
   async function fetchDeployment() {
+    console.log("want to get deployment-")
     let _currentDeployment = await getCurrentDeployment(myUrlAddress);
     if (!_currentDeployment) {
       return null;

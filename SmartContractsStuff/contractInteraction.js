@@ -3,7 +3,11 @@ import { getTokensMetaData } from "./IpfsInteraction";
 
 export const getWebsiteRentContract = async () => {
   let contractAddress = WebsiteRentAddress;
+  console.log("getting tronweb")
   let tronWeb = await window.tronLink.tronWeb;
+  console.log("getting contract with ",{
+    tronWeb
+  })
   let contract = await tronWeb.contract().at(contractAddress);
   return contract;
 };
@@ -68,7 +72,7 @@ function noDeployment(adr) {
 }
 
 export async function getCurrentDeployment(websiteURL) {
-  //   console.log("inside getting current deployment");
+    console.log("inside getting current deployment");
   let contract = await getWebsiteRentContract();
   //   console.log("contract is ", contract);
   console.log("checking Deployment of _" + websiteURL + "_");
